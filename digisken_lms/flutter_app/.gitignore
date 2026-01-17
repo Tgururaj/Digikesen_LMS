@@ -1,0 +1,9 @@
+.flutter-plugins-dependencies
+.flutter-plugins
+.dart_tool/
+build/
+*.apk
+*.ipa
+.DS_Store
+.env.local
+.env.*.local
