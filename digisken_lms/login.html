@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiSken LMS - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px 30px;
+        }
+
+        h1 {
+            color: #1976d2;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+
+        .message.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #42a5f5;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .otp-inputs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .otp-inputs input {
+            width: 40px;
+            height: 50px;
+            font-size: 24px;
+            text-align: center;
+            padding: 0;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .toggle-link a {
+            color: #1976d2;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DigiSken LMS</h1>
+        <p class="subtitle" id="subtitle">Login to your account</p>
+
+        <!-- Login Form -->
+        <div id="loginSection">
+            <div id="loginMessage" class="message"></div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="loginPhone" placeholder="+1234567890" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <div class="toggle-link">
+                Don't have an account? <a onclick="switchToRegister()">Register</a>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerSection" class="hidden">
+            <div id="registerMessage" class="message"></div>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="registerPhone" placeholder="+1234567890" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword" placeholder="Create a strong password" required oninput="validatePassword(this.value)">
+                </div>
+                <button type="submit">Register</button>
+            </form>
+            <div class="toggle-link">
+                Already have an account? <a onclick="switchToLogin()">Login</a>
+            </div>
+        </div>
+
+        <!-- OTP Section -->
+        <div id="otpSection" class="hidden">
+            <div id="otpMessage" class="message"></div>
+            <form id="otpForm" onsubmit="handleOTPVerification(event)">
+                <label>Enter 6-digit code from SMS</label>
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" class="otp-digit" required>
+                    <input type="text" maxlength="1" class="otp-digit" required>
+                    <input type="text" maxlength="1" class="otp-digit" required>
+                    <input type="text" maxlength="1" class="otp-digit" required>
+                    <input type="text" maxlength="1" class="otp-digit" required>
+                    <input type="text" maxlength="1" class="otp-digit" required>
+                </div>
+                <button type="submit">Verify</button>
+            </form>
+            <div class="toggle-link">
+                <a onclick="resendOTP()">Resend</a> | <a onclick="backToLogin()">Back</a>
+            </div>
+        </div>
+
+        <!-- Success Section -->
+        <div id="successSection" class="hidden">
+            <p style="text-align: center; color: #2e7d32; font-weight: 600;">✓ Registration Complete!</p>
+            <p style="text-align: center; color: #666; margin: 10px 0;">2FA is enabled. You'll receive SMS codes when logging in.</p>
+            <button onclick="switchToLogin()">Go to Login</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let currentPhone = '';
+
+        function showMsg(id, msg, type) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.className = 'message show ' + type;
+            setTimeout(() => el.classList.remove('show'), 5000);
+        }
+
+        function switchToRegister() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('registerSection').classList.remove('hidden');
+            document.getElementById('otpSection').classList.add('hidden');
+            document.getElementById('successSection').classList.add('hidden');
+            document.getElementById('subtitle').textContent = 'Create your account';
+        }
+
+        function switchToLogin() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('registerSection').classList.add('hidden');
+            document.getElementById('otpSection').classList.add('hidden');
+            document.getElementById('successSection').classList.add('hidden');
+            document.getElementById('subtitle').textContent = 'Login to your account';
+        }
+
+        function validatePassword(pwd) {
+            const ok = pwd.length >= 8 && /[A-Z]/.test(pwd) && /[0-9]/.test(pwd) && /[!@#$%^&*()_+\-=\[\]{};:,.<>?]/.test(pwd);
+            return ok;
+        }
+
+        function setupOTP() {
+            document.querySelectorAll('.otp-digit').forEach((inp, i) => {
+                inp.addEventListener('input', () => {
+                    if (inp.value && i < 5) document.querySelectorAll('.otp-digit')[i + 1].focus();
+                });
+                inp.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !inp.value && i > 0) document.querySelectorAll('.otp-digit')[i - 1].focus();
+                });
+            });
+        }
+
+        function getOTP() {
+            return Array.from(document.querySelectorAll('.otp-digit')).map(x => x.value).join('');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const ph = document.getElementById('loginPhone').value;
+            const pw = document.getElementById('loginPassword').value;
+            
+            try {
+                const r = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone_number: ph, password: pw })
+                });
+                const d = await r.json();
+                
+                if (!r.ok) {
+                    showMsg('loginMessage', d.error, 'error');
+                    return;
+                }
+                
+                currentPhone = ph;
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('otpSection').classList.remove('hidden');
+                setupOTP();
+                showMsg('otpMessage', '📱 Check backend console for OTP code', 'info');
+            } catch (err) {
+                showMsg('loginMessage', 'Error: ' + err.message, 'error');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const ph = document.getElementById('registerPhone').value;
+            const pw = document.getElementById('registerPassword').value;
+            
+            if (!validatePassword(pw)) {
+                showMsg('registerMessage', 'Password: 8+ chars, uppercase, number, special char', 'error');
+                return;
+            }
+            
+            try {
+                const r = await fetch(`${API_BASE}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone_number: ph, password: pw })
+                });
+                const d = await r.json();
+                
+                if (!r.ok) {
+                    showMsg('registerMessage', d.error, 'error');
+                    return;
+                }
+                
+                document.getElementById('registerSection').classList.add('hidden');
+                document.getElementById('successSection').classList.remove('hidden');
+            } catch (err) {
+                showMsg('registerMessage', 'Error: ' + err.message, 'error');
+            }
+        }
+
+        async function handleOTPVerification(e) {
+            e.preventDefault();
+            const otp = getOTP();
+            
+            if (otp.length !== 6) {
+                showMsg('otpMessage', 'Enter 6 digits', 'error');
+                return;
+            }
+            
+            try {
+                const r = await fetch(`${API_BASE}/verify-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone_number: currentPhone, otp: otp })
+                });
+                const d = await r.json();
+                
+                if (!r.ok) {
+                    showMsg('otpMessage', d.error, 'error');
+                    return;
+                }
+                
+                localStorage.setItem('sessionToken', d.session_token);
+                showMsg('otpMessage', '✓ Verified! Redirecting...', 'info');
+                setTimeout(() => window.location.href = 'index.html', 1500);
+            } catch (err) {
+                showMsg('otpMessage', 'Error: ' + err.message, 'error');
+            }
+        }
+
+        async function resendOTP() {
+            try {
+                const r = await fetch(`${API_BASE}/resend-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone_number: currentPhone })
+                });
+                if (r.ok) {
+                    showMsg('otpMessage', '✓ Code resent', 'info');
+                    document.querySelectorAll('.otp-digit').forEach(x => x.value = '');
+                } else {
+                    showMsg('otpMessage', (await r.json()).error, 'error');
+                }
+            } catch (err) {
+                showMsg('otpMessage', 'Error: ' + err.message, 'error');
+            }
+        }
+
+        function backToLogin() {
+            switchToLogin();
+        }
+
+        setupOTP();
+    </script>
+</body>
+</html>

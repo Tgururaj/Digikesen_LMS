@@ -1,0 +1,126 @@
+📱 DigiSken LMS - SMS OTP 2FA System
+=====================================
+
+✅ SETUP COMPLETE - System Ready for Testing
+
+QUICK START:
+============
+
+1. Install dependencies:
+   pip install -r requirements_auth.txt
+
+2. Start backend (in digisken_lms folder):
+   python backend.py
+   
+   Or on Windows:
+   START_AUTH.bat
+
+3. Start frontend (new terminal):
+   python -m http.server 8000
+
+4. Open browser:
+   http://localhost:8000/login.html
+
+TEST FLOW:
+==========
+
+REGISTER:
+  - Phone: +1234567890 (or any 10+ digit number)
+  - Password: Password123! (uppercase + number + special char)
+  - ✓ You'll see "Registration successful"
+
+LOGIN:
+  - Phone: +1234567890
+  - Password: Password123!
+  - ✓ Backend will print OTP code to console
+
+VERIFY OTP:
+  - Copy 6-digit code from backend terminal
+  - Paste into OTP field
+  - ✓ You're logged in!
+
+PRODUCTION SETUP:
+=================
+
+Get Twilio SMS (optional):
+1. Visit https://www.twilio.com/
+2. Sign up for free trial
+3. Get Account SID, Auth Token, Phone Number
+
+Set environment variables:
+  Windows PowerShell:
+    $env:TWILIO_ACCOUNT_SID = "your_sid"
+    $env:TWILIO_AUTH_TOKEN = "your_token"  
+    $env:TWILIO_PHONE_NUMBER = "+1234567890"
+    $env:DEBUG_MODE = "False"
+
+  Linux/Mac:
+    export TWILIO_ACCOUNT_SID="your_sid"
+    export TWILIO_AUTH_TOKEN="your_token"
+    export TWILIO_PHONE_NUMBER="+1234567890"
+    export DEBUG_MODE="False"
+
+Restart backend and SMS will send via Twilio!
+
+API ENDPOINTS:
+==============
+
+POST /api/register
+  { "phone_number": "+1234567890", "password": "Pass123!" }
+
+POST /api/login
+  { "phone_number": "+1234567890", "password": "Pass123!" }
+  
+POST /api/verify-otp
+  { "phone_number": "+1234567890", "otp": "123456" }
+
+POST /api/resend-otp
+  { "phone_number": "+1234567890" }
+
+POST /api/verify-session
+  { "session_token": "token_here" }
+
+POST /api/logout
+  { "session_token": "token_here" }
+
+SECURITY:
+=========
+
+✓ Passwords: bcrypt hashed (12 salt rounds)
+✓ OTP: 6-digit, 10-minute expiry, rate limited
+✓ Sessions: 7-day expiry, cryptographically random
+✓ Database: SQLite with secure schema
+✓ SMS: Twilio for production, console debug for testing
+
+FEATURES:
+=========
+
+✓ SMS-based 2FA (accessible for PNG users - no authenticator app needed)
+✓ Password strength requirements
+✓ Rate limiting (5 attempts, 15-min lockout)
+✓ Session management
+✓ Account registration
+✓ OTP resend functionality
+✓ Debug mode for local testing (no SMS costs)
+
+FILES:
+======
+
+backend.py               - Flask API with SMS OTP
+login.html              - Registration/Login UI
+digikesen.html          - Main app (requires session)
+index.html              - Alias for digikesen.html
+requirements_auth.txt   - Python packages
+SMS_OTP_README.md       - Full documentation
+START_AUTH.bat          - Windows startup script
+
+NEXT STEPS:
+===========
+
+1. Test registration & login locally ✓
+2. Verify OTP receives SMS in debug mode ✓
+3. (Optional) Get Twilio account for real SMS
+4. Set environment variables for production
+5. Deploy with DEBUG_MODE="False"
+
+For full details, see SMS_OTP_README.md
